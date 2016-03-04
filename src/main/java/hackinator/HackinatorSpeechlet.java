@@ -46,7 +46,7 @@ public class HackinatorSpeechlet implements Speechlet {
     private void setHackSession(Session session, HackinatorSession hackinatorSession) {
         try {
             String hackinatorString = new ObjectMapper().writeValueAsString(hackinatorSession);
-            session.setAttribute(HACK_SESSION, hackinatorSession);
+            session.setAttribute(HACK_SESSION, hackinatorString);
         } catch (JsonProcessingException e) {
             log.error("cannot serialize hackintosh session");
         }
