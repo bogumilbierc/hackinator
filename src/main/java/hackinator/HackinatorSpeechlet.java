@@ -14,6 +14,8 @@ import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+import hackinator.api.IJavinator;
+import hackinator.api.Javinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +25,15 @@ import org.slf4j.LoggerFactory;
 public class HackinatorSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(HackinatorSpeechlet.class);
 
+    private IJavinator javinator = new Javinator();
+
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
             throws SpeechletException {
         log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(),
                 session.getSessionId());
         // any initialization logic goes here
+        javinator.startSession();
     }
 
     @Override
@@ -71,11 +76,11 @@ public class HackinatorSpeechlet implements Speechlet {
      * @return SpeechletResponse spoken and visual response for the given intent
      */
     private SpeechletResponse getWelcomeResponse() {
-        String speechText = "Welcome to the Alexa Skills Kit, you can say hello";
+        String speechText = "Welcome to the hackinator, you can say Start Game";
 
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
-        card.setTitle("HelloWorld");
+        card.setTitle("Hello Hakinator");
         card.setContent(speechText);
 
         // Create the plain text output.
