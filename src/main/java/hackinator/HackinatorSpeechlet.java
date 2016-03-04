@@ -123,7 +123,7 @@ public class HackinatorSpeechlet implements Speechlet {
 
         String currentAnswer = "yes";
         String speechText = "";
-        log.info("answer from user " + intent.getSlot("Answer"));
+        log.info("answer from user " + intent.getSlot("Answer").getValue());
 
 
         if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
