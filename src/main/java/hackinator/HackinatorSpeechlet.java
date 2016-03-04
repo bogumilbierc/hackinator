@@ -68,7 +68,7 @@ public class HackinatorSpeechlet implements Speechlet {
             throws SpeechletException {
         log.info("onLaunch requestId={}, sessionId={}", request.getRequestId(),
                 session.getSessionId());
-        return getWelcomeResponse();
+        return getWelcomeResponse(session);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class HackinatorSpeechlet implements Speechlet {
         if ("AnswerIntent".equals(intentName)) {
             return getNextQuestion(intent, session);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
-            return getHelpResponse();
+            return getHelpResponse(session);
         } else if ("AMAZON.StopIntent".equals(intentName)) {
             PlainTextOutputSpeech outputSpeech = new PlainTextOutputSpeech();
             outputSpeech.setText("Goodbye");
@@ -95,6 +95,8 @@ public class HackinatorSpeechlet implements Speechlet {
             outputSpeech.setText("Goodbye");
 
             return SpeechletResponse.newTellResponse(outputSpeech);
+        } else if ("AMAZON.RepeatIntent".equals(intentName)) {
+            return askResponse("Next question", getHackSession(session).currentQuestion);
         } else {
             throw new SpeechletException("Invalid Intent");
         }
@@ -113,23 +115,12 @@ public class HackinatorSpeechlet implements Speechlet {
      *
      * @return SpeechletResponse spoken and visual response for the given intent
      */
-    private SpeechletResponse getWelcomeResponse() {
+    private SpeechletResponse getWelcomeResponse(Session session) {
         String speechText = "Welcome to the Hackinator, think of a character and I will guess it. Ready?";
+        getHackSession(session).currentQuestion = speechText;
+        setHackSession(session, getHackSession(session));
 
-        // Create the Simple card content.
-        SimpleCard card = new SimpleCard();
-        card.setTitle("Hello Hakinator");
-        card.setContent(speechText);
-
-        // Create the plain text output.
-        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(speechText);
-
-        // Create reprompt
-        Reprompt reprompt = new Reprompt();
-        reprompt.setOutputSpeech(speech);
-
-        return SpeechletResponse.newAskResponse(speech, reprompt, card);
+        return askResponse("Hackinator", speechText);
     }
 
     /**
@@ -137,8 +128,8 @@ public class HackinatorSpeechlet implements Speechlet {
      *
      * @return SpeechletResponse spoken and visual response for the given intent
      */
-    private SpeechletResponse getHelpResponse() {
-        return getWelcomeResponse();
+    private SpeechletResponse getHelpResponse(Session session) {
+        return getWelcomeResponse(session);
     }
 
     private SpeechletResponse getNextQuestion(Intent intent, Session session) {
@@ -173,7 +164,6 @@ public class HackinatorSpeechlet implements Speechlet {
                 StaticGamer.javinator.sendAnswer(translatedAnswer);
                 StaticGamer.javinator.getStep();
                 speechText = StaticGamer.javinator.getCurrentQuestion();
-
             }
 
             try {
@@ -193,12 +183,17 @@ public class HackinatorSpeechlet implements Speechlet {
 
 
         hackinatorSession = StaticGamer.javinator.getHackinatorSession();
+        hackinatorSession.currentQuestion = speechText;
         setHackSession(session, hackinatorSession);
 
 
+        return askResponse("Next Question", speechText);
+    }
+
+    private static SpeechletResponse askResponse(String title, String speechText) {
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
-        card.setTitle("NextQuestion");
+        card.setTitle(title);
         card.setContent(speechText);
 
         // Create the plain text output.

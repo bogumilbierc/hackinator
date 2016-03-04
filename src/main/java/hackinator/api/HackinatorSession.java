@@ -7,6 +7,7 @@ public class HackinatorSession {
     private Integer step;
     private Integer session;
     private Integer signature;
+    public String currentQuestion;
 
     public HackinatorSession() {
         this.step = 0;

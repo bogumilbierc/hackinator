@@ -1,6 +1,5 @@
 package hackinator.api;
 
-import java.io.IOException;
 import java.net.URL;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,9 +20,6 @@ public class Javinator implements IJavinator {
 
     private static final double DEFAULT_THRESHOLD = 80.0;
 
-    private String currentAnswer = "";
-    private String currentQuestion = "";
-
     public HackinatorSession getHackinatorSession() {
         return hackinatorSession;
     }
@@ -34,11 +30,11 @@ public class Javinator implements IJavinator {
 
 
     public String getCurrentQuestion() {
-        return currentQuestion;
+        return hackinatorSession.currentQuestion;
     }
 
     public void setCurrentQuestion(String currentQuestion) {
-        this.currentQuestion = currentQuestion;
+        this.hackinatorSession.currentQuestion = currentQuestion;
     }
 
     public int getSession() {
@@ -123,7 +119,7 @@ public class Javinator implements IJavinator {
         this.hackinatorSession.setSignature(response.getParameters().getIdentification().getSignature());
         this.started = true;
         this.hackinatorSession.setStep(0);
-        this.currentQuestion = getQuestion();
+        this.hackinatorSession.currentQuestion = getQuestion();
         return 0;
 
     }
