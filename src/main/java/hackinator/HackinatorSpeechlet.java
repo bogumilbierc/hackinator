@@ -34,6 +34,7 @@ public class HackinatorSpeechlet implements Speechlet {
                 session.getSessionId());
         // any initialization logic goes here
         StaticGamer.javinator.startSession();
+
     }
 
     @Override
@@ -52,6 +53,7 @@ public class HackinatorSpeechlet implements Speechlet {
 
         Intent intent = request.getIntent();
         String intentName = (intent != null) ? intent.getName() : null;
+
 
 
         if ("AnswerIntent".equals(intentName)) {
@@ -123,6 +125,8 @@ public class HackinatorSpeechlet implements Speechlet {
 
         String currentAnswer = "yes";
         String speechText = "";
+        log.info("answer from user " + intent.getSlot("Answer"));
+
 
         if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
             StaticGamer.javinator.sendAnswer(currentAnswer);
