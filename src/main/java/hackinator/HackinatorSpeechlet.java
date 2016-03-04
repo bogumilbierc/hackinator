@@ -136,6 +136,7 @@ public class HackinatorSpeechlet implements Speechlet {
         HackinatorSession hackinatorSession = getHackSession(session);
         StaticGamer.javinator.setHackinatorSession(hackinatorSession);
 
+
         String currentAnswer = intent.getSlot("Answer").getValue();
         String speechText = "";
         log.info("answer from user " + currentAnswer);
@@ -143,48 +144,55 @@ public class HackinatorSpeechlet implements Speechlet {
         log.info("translated answer " + translatedAnswer);
 
         boolean finished = false;
+        boolean guessQuestionAsked = false;
+        boolean newGame = true;
+        boolean negativeAnswer = false;
 
-        if (StaticGamer.javinator.getStep() > MAX_STEPS) {
-            try {
-                if (StaticGamer.javinator.haveGuess()) {
-                    if (StaticGamer.javinator.getAllGuesses().length > 0) {
-                        speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
-                        finished = true;
-                        StaticGamer.javinator.startSession();
-                    }
-                }
-            } catch (Exception e) {
-                speechText = "Your character is: YOUR mother";
-
+        if (hackinatorSession.isQuessVeryficationAsked()) {
+            guessQuestionAsked = true;
+            if (translatedAnswer.equals("yes")) {
+                speechText = "I'm a master of disaster. Do you want to play more?";
+                hackinatorSession.newGameQuestionAsked = true;
+                hackinatorSession.quessVeryficationAsked = false;
+                setHackSession(session, hackinatorSession);
+                StaticGamer.javinator.setHackinatorSession(hackinatorSession);
+            } else {
+                negativeAnswer = true;
+                hackinatorSession.quessVeryficationAsked = false;
+                setHackSession(session, hackinatorSession);
             }
         }
 
-        if (!finished) {
-            if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
+        if ((guessQuestionAsked && newGame)) {
+            StaticGamer.javinator.startSession();
+            hackinatorSession = StaticGamer.javinator.getHackinatorSession();
+            speechText = StaticGamer.javinator.getCurrentQuestion();
+            hackinatorSession.currentQuestion = speechText;
+            setHackSession(session, StaticGamer.javinator.getHackinatorSession());
+        }
+
+        if (guessQuestionAsked && negativeAnswer) {
+            StaticGamer.javinator.sendAnswer("no");
+            speechText = StaticGamer.javinator.getCurrentQuestion();
+            hackinatorSession.currentQuestion = speechText;
+            setHackSession(session, StaticGamer.javinator.getHackinatorSession());
+        }
+
+        if (!guessQuestionAsked) {
+            if (StaticGamer.javinator.haveGuess()) {
+                if (StaticGamer.javinator.getAllGuesses().length > 0) {
+                    speechText = "Is Your character " + StaticGamer.javinator.getAllGuesses()[0] + "?";
+                    hackinatorSession.setQuessVeryficationAsked(true);
+                    hackinatorSession.currentQuestion = speechText;
+                    setHackSession(session, hackinatorSession);
+                }
+            } else {
                 StaticGamer.javinator.sendAnswer(translatedAnswer);
-                StaticGamer.javinator.getStep();
                 speechText = StaticGamer.javinator.getCurrentQuestion();
-            }
-
-            try {
-                if (StaticGamer.javinator.haveGuess()) {
-                    if (StaticGamer.javinator.getAllGuesses().length > 0) {
-                        speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
-                        finished = true;
-                        StaticGamer.javinator.startSession();
-                        setHackSession(session, StaticGamer.javinator.getHackinatorSession());
-                    }
-                }
-            } catch (Exception e) {
-                speechText = "Your character is: YOUR mother";
-
+                hackinatorSession.currentQuestion = speechText;
+                setHackSession(session, hackinatorSession);
             }
         }
-
-
-        hackinatorSession = StaticGamer.javinator.getHackinatorSession();
-        hackinatorSession.currentQuestion = speechText;
-        setHackSession(session, hackinatorSession);
 
 
         return askResponse("Next Question", speechText);
