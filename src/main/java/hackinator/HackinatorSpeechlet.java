@@ -138,22 +138,7 @@ public class HackinatorSpeechlet implements Speechlet {
      * @return SpeechletResponse spoken and visual response for the given intent
      */
     private SpeechletResponse getHelpResponse() {
-        String speechText = "You can say hello to me!";
-
-        // Create the Simple card content.
-        SimpleCard card = new SimpleCard();
-        card.setTitle("HelloWorld");
-        card.setContent(speechText);
-
-        // Create the plain text output.
-        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
-        speech.setText(speechText);
-
-        // Create reprompt
-        Reprompt reprompt = new Reprompt();
-        reprompt.setOutputSpeech(speech);
-
-        return SpeechletResponse.newAskResponse(speech, reprompt, card);
+        return getWelcomeResponse();
     }
 
     private SpeechletResponse getNextQuestion(Intent intent, Session session) {
