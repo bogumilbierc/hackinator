@@ -9,3 +9,9 @@ AnswerIntent no
 AnswerIntent nope
 AnswerIntent not really
 AnswerIntent nah
+AnswerIntent probably
+AnswerIntent maybe
+AnswerIntent not sure
+AnswerIntent think so
+AnswerIntent don't think so
+AnswerIntent probably not
