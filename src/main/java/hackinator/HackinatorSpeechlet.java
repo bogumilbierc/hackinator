@@ -16,6 +16,7 @@ import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import hackinator.api.IJavinator;
 import hackinator.api.Javinator;
+import hackinator.state.StaticGamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 public class HackinatorSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(HackinatorSpeechlet.class);
 
-    private IJavinator javinator = new Javinator();
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -33,7 +33,7 @@ public class HackinatorSpeechlet implements Speechlet {
         log.info("onSessionStarted requestId={}, sessionId={}", request.getRequestId(),
                 session.getSessionId());
         // any initialization logic goes here
-        javinator.startSession();
+        StaticGamer.javinator.startSession();
     }
 
     @Override
@@ -124,10 +124,10 @@ public class HackinatorSpeechlet implements Speechlet {
         String currentAnswer= "get from intent";
         String speechText = "no question";
 
-        if(!currentAnswer.equalsIgnoreCase("exit") && !javinator.haveGuess()){
-            javinator.sendAnswer(currentAnswer);
-            javinator.getStep();
-             speechText = javinator.getCurrentQuestion();
+        if(!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()){
+            StaticGamer.javinator.sendAnswer(currentAnswer);
+            StaticGamer.javinator.getStep();
+             speechText = StaticGamer.javinator.getCurrentQuestion();
 
         }
 
