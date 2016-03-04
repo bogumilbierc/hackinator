@@ -29,7 +29,7 @@ public final class HackinatorSpeechletRequestStreamHandler extends SpeechletRequ
          * This Id can be found on https://developer.amazon.com/edw/home.html#/ "Edit" the relevant
          * Alexa Skill and put the relevant Application Ids in this Set.
          */
-        supportedApplicationIds.add("amzn1.echo-sdk-ams.app.ef15f0aa-d0f8-475e-ab64-9bcc36d65452");
+        supportedApplicationIds.add("amzn1.echo-sdk-ams.app.7e0a58cd-900e-4c7c-92e2-ac06e04afdf8");
     }
 
     public HackinatorSpeechletRequestStreamHandler() {
