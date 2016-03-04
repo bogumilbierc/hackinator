@@ -1,0 +1,11 @@
+AnswerIntent yes
+AnswerIntent yep
+AnswerIntent yeah
+AnswerIntent sure
+AnswerIntent sort of
+AnswerIntent i don't know
+AnswerIntent i do not know
+AnswerIntent no
+AnswerIntent nope
+AnswerIntent not really
+AnswerIntent nah
