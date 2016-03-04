@@ -17,14 +17,21 @@ public class Javinator implements IJavinator {
     private Response currentResponse;
     private boolean started = false;
     private double threshold;
+    private HackinatorSession hackinatorSession;
 
     private static final double DEFAULT_THRESHOLD = 80.0;
 
     private String currentAnswer = "";
     private String currentQuestion = "";
-    private Integer step;
-    private Integer session;
-    private Integer signature;
+
+    public HackinatorSession getHackinatorSession() {
+        return hackinatorSession;
+    }
+
+    public void setHackinatorSession(HackinatorSession hackinatorSession) {
+        this.hackinatorSession = hackinatorSession;
+    }
+
 
     public String getCurrentQuestion() {
         return currentQuestion;
@@ -35,11 +42,11 @@ public class Javinator implements IJavinator {
     }
 
     public int getSession() {
-        return session;
+        return hackinatorSession.getSession();
     }
 
     public int getSignature() {
-        return signature;
+        return hackinatorSession.getSignature();
     }
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -77,7 +84,7 @@ public class Javinator implements IJavinator {
     public String[] getAllGuesses() {
         String url = CORE_URL + "list?session=" + this.getSession() +
                 "&signature=" + this.getSignature() +
-                "&step=" + (this.step) +
+                "&step=" + (this.hackinatorSession.getStep()) +
                 "&mode_question=0";
         Response response = sendRequest(url);
         if (response.getParameters().getElements() != null) {
@@ -93,7 +100,7 @@ public class Javinator implements IJavinator {
 
 
     public Integer getStep() {
-        return this.step + 1;
+        return this.hackinatorSession.getStep() + 1;
     }
 
     private Response getCurrentResponse() {
@@ -105,10 +112,10 @@ public class Javinator implements IJavinator {
         String url = CORE_URL + "new_session?partner=1&player=Hackinator";
         Response response = sendRequest(url);
         this.currentResponse = response;
-        this.session = response.getParameters().getIdentification().getSession();
-        this.signature = response.getParameters().getIdentification().getSignature();
+        this.hackinatorSession.setSession(response.getParameters().getIdentification().getSession());
+        this.hackinatorSession.setSignature(response.getParameters().getIdentification().getSignature());
         this.started = true;
-        this.step = 0;
+        this.hackinatorSession.setStep(0);
         this.currentQuestion = getQuestion();
         return 0;
 
@@ -124,10 +131,11 @@ public class Javinator implements IJavinator {
     }
 
     public String sendAnswer(String answer) {
+        this.hackinatorSession.setStep(getStep() + 1);
 
         String url = CORE_URL + "answer?session=" + this.getSession() +
                 "&signature=" + this.getSignature() +
-                "&step=" + (this.step++) +
+                "&step=" + (this.getStep()) +
                 "&answer=" + getAnswerID(answer);
 
         this.currentResponse = sendRequest(url);
@@ -137,8 +145,8 @@ public class Javinator implements IJavinator {
     }
 
     public Integer endSession() {
-        this.session = null;
-        this.step = null;
+        this.hackinatorSession.setSession(null);
+        this.hackinatorSession.setStep(null);
         return null;
     }
 
@@ -147,7 +155,7 @@ public class Javinator implements IJavinator {
             log.info("Sent reqiest: " + url);
             Response response = mapper.readValue(new URL(url), Response.class);
 //            System.out.println("\t" + url + "\n" + response);
-            log.info("Response: "+response);
+            log.info("Response: " + response);
             return response;
         } catch (Exception e) {
             log.error("ERROR!!!" + e.getLocalizedMessage());

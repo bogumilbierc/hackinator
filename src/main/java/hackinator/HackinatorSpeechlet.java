@@ -14,6 +14,7 @@ import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+import hackinator.api.HackinatorSession;
 import hackinator.state.StaticGamer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,15 @@ import org.slf4j.LoggerFactory;
 public class HackinatorSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(HackinatorSpeechlet.class);
 
+    private static final String HACK_SESSION = "HACK_SESSION";
+
+    private HackinatorSession getHackSession(Session session) {
+        return (HackinatorSession) session.getAttribute(HACK_SESSION);
+    }
+
+    private void setHackSession(Session session, HackinatorSession hackinatorSession) {
+        session.setAttribute(HACK_SESSION, hackinatorSession);
+    }
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -32,6 +42,7 @@ public class HackinatorSpeechlet implements Speechlet {
                 session.getSessionId());
         // any initialization logic goes here
         StaticGamer.javinator.startSession();
+        setHackSession(session, StaticGamer.javinator.getHackinatorSession());
 
     }
 
@@ -54,7 +65,7 @@ public class HackinatorSpeechlet implements Speechlet {
 
 
         if ("AnswerIntent".equals(intentName)) {
-            return getNextQuestion(intent);
+            return getNextQuestion(intent, session);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return getHelpResponse();
         } else {
@@ -118,7 +129,9 @@ public class HackinatorSpeechlet implements Speechlet {
         return SpeechletResponse.newAskResponse(speech, reprompt, card);
     }
 
-    private SpeechletResponse getNextQuestion(Intent intent) {
+    private SpeechletResponse getNextQuestion(Intent intent, Session session) {
+        HackinatorSession hackinatorSession = getHackSession(session);
+        StaticGamer.javinator.setHackinatorSession(hackinatorSession);
 
         String currentAnswer = intent.getSlot("Answer").getValue();
         String speechText = "";
@@ -140,6 +153,9 @@ public class HackinatorSpeechlet implements Speechlet {
                 StaticGamer.javinator.startSession();
             }
         }
+
+        hackinatorSession = StaticGamer.javinator.getHackinatorSession();
+        setHackSession(session, hackinatorSession);
 
 
         // Create the Simple card content.
