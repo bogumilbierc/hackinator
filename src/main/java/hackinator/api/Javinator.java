@@ -149,8 +149,8 @@ public class Javinator implements IJavinator {
 //            System.out.println("\t" + url + "\n" + response);
             log.info("Response: "+response);
             return response;
-        } catch (IOException e) {
-            System.out.println("ERROR!!!" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            log.error("ERROR!!!" + e.getLocalizedMessage());
         }
         return null;
     }
