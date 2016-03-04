@@ -1,11 +1,11 @@
 /**
-    Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-
-    Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
-
-        http://aws.amazon.com/apache2.0/
-
-    or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
+ * <p>
+ * http://aws.amazon.com/apache2.0/
+ * <p>
+ * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 package hackinator;
 
@@ -119,18 +119,23 @@ public class HackinatorSpeechlet implements Speechlet {
         return SpeechletResponse.newAskResponse(speech, reprompt, card);
     }
 
-    private SpeechletResponse getNextQuestion(Intent intent){
+    private SpeechletResponse getNextQuestion(Intent intent) {
 
-        String currentAnswer= "yes";
-        String speechText = "no question";
+        String currentAnswer = "yes";
+        String speechText = "";
 
-        if(!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()){
+        if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
             StaticGamer.javinator.sendAnswer(currentAnswer);
             StaticGamer.javinator.getStep();
-             speechText = StaticGamer.javinator.getCurrentQuestion();
+            speechText = StaticGamer.javinator.getCurrentQuestion();
 
         }
 
+        if (StaticGamer.javinator.haveGuess()) {
+            for (String guess : StaticGamer.javinator.getAllGuesses()) {
+                speechText += guess + " ";
+            }
+        }
 
 
         // Create the Simple card content.
