@@ -114,7 +114,7 @@ public class HackinatorSpeechlet implements Speechlet {
      * @return SpeechletResponse spoken and visual response for the given intent
      */
     private SpeechletResponse getWelcomeResponse() {
-        String speechText = "Welcome to the hackinator, you can say Start Game";
+        String speechText = "Welcome to the Hackinator, think of a character and I will guess it. Ready?";
 
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
