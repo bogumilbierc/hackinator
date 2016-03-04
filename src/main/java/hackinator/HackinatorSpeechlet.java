@@ -28,6 +28,7 @@ public class HackinatorSpeechlet implements Speechlet {
     private static final Logger log = LoggerFactory.getLogger(HackinatorSpeechlet.class);
 
     private static final String HACK_SESSION = "HACK_SESSION";
+    private static final Integer MAX_STEPS = 15;
 
     private HackinatorSession getHackSession(Session session) {
 
@@ -165,25 +166,44 @@ public class HackinatorSpeechlet implements Speechlet {
         String translatedAnswer = AnswerMapper.getAnswer(currentAnswer);
         log.info("translated answer " + translatedAnswer);
 
+        boolean finished = false;
 
-        if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
-            StaticGamer.javinator.sendAnswer(translatedAnswer);
-            StaticGamer.javinator.getStep();
-            speechText = StaticGamer.javinator.getCurrentQuestion();
-
-        }
-
-        try {
-            if (StaticGamer.javinator.haveGuess()) {
-                if (StaticGamer.javinator.getAllGuesses().length > 0) {
-                    speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
-                    StaticGamer.javinator.startSession();
+        if (StaticGamer.javinator.getStep() > MAX_STEPS) {
+            try {
+                if (StaticGamer.javinator.haveGuess()) {
+                    if (StaticGamer.javinator.getAllGuesses().length > 0) {
+                        speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
+                        finished = true;
+                        StaticGamer.javinator.startSession();
+                    }
                 }
-            }
-        } catch (Exception e) {
-            speechText = "Your character is: YOUR mother";
+            } catch (Exception e) {
+                speechText = "Your character is: YOUR mother";
 
+            }
         }
+
+        if (!finished) {
+            if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
+                StaticGamer.javinator.sendAnswer(translatedAnswer);
+                StaticGamer.javinator.getStep();
+                speechText = StaticGamer.javinator.getCurrentQuestion();
+
+            }
+
+            try {
+                if (StaticGamer.javinator.haveGuess()) {
+                    if (StaticGamer.javinator.getAllGuesses().length > 0) {
+                        speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
+                        StaticGamer.javinator.startSession();
+                    }
+                }
+            } catch (Exception e) {
+                speechText = "Your character is: YOUR mother";
+
+            }
+        }
+
 
         hackinatorSession = StaticGamer.javinator.getHackinatorSession();
         setHackSession(session, hackinatorSession);
