@@ -18,7 +18,7 @@ public class Javinator implements IJavinator{
     private boolean started=false;
     private double threshold;
 
-    private static final double DEFAULT_THRESHOLD=95.0;
+    private static final double DEFAULT_THRESHOLD=80.0;
 
     private String currentAnswer="";
     private String currentQuestion="";

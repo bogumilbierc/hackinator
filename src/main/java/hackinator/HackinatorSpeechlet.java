@@ -121,11 +121,11 @@ public class HackinatorSpeechlet implements Speechlet {
     private SpeechletResponse getNextQuestion(Intent intent) {
         int retry = 10;
         for (int i = 0; i < retry; i++) {
-             try {
+            try {
                 return getNextQuestionUnsafe(intent);
-             } catch (Exception e) {
+            } catch (Exception e) {
 
-             }
+            }
         }
         return getNextQuestionUnsafe(intent);
     }
@@ -146,8 +146,9 @@ public class HackinatorSpeechlet implements Speechlet {
         }
 
         if (StaticGamer.javinator.haveGuess()) {
-            for (String guess : StaticGamer.javinator.getAllGuesses()) {
-                speechText += guess + " ";
+            if (StaticGamer.javinator.getAllGuesses().length > 0) {
+                speechText = StaticGamer.javinator.getAllGuesses()[0];
+                StaticGamer.javinator.startSession();
             }
         }
 
