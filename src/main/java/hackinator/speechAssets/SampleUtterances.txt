@@ -15,4 +15,9 @@ AnswerIntent probably yeap
 AnswerIntent probably yeah
 AnswerIntent probably no
 AnswerIntent probably nope
-
+AnswerIntent probably
+AnswerIntent maybe
+AnswerIntent not sure
+AnswerIntent think so
+AnswerIntent don't think so
+AnswerIntent probably not
