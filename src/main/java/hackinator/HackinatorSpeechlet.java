@@ -53,7 +53,6 @@ public class HackinatorSpeechlet implements Speechlet {
         String intentName = (intent != null) ? intent.getName() : null;
 
 
-
         if ("AnswerIntent".equals(intentName)) {
             return getNextQuestion(intent);
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
@@ -121,13 +120,15 @@ public class HackinatorSpeechlet implements Speechlet {
 
     private SpeechletResponse getNextQuestion(Intent intent) {
 
-        String currentAnswer = "yes";
+        String currentAnswer = intent.getSlot("Answer").getValue();
         String speechText = "";
-        log.info("answer from user " + intent.getSlot("Answer").getValue());
+        log.info("answer from user " + currentAnswer);
+        String translatedAnswer = AnswerMapper.getAnswer(currentAnswer);
+        log.info("translated answer " + translatedAnswer);
 
 
         if (!currentAnswer.equalsIgnoreCase("exit") && !StaticGamer.javinator.haveGuess()) {
-            StaticGamer.javinator.sendAnswer(currentAnswer);
+            StaticGamer.javinator.sendAnswer(translatedAnswer);
             StaticGamer.javinator.getStep();
             speechText = StaticGamer.javinator.getCurrentQuestion();
 
