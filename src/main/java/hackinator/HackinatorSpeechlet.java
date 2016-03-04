@@ -120,7 +120,18 @@ public class HackinatorSpeechlet implements Speechlet {
     }
 
     private SpeechletResponse getNextQuestion(Intent intent){
-        String speechText = "Sample next question!";
+
+        String currentAnswer= "get from intent";
+        String speechText = "no question";
+
+        if(!currentAnswer.equalsIgnoreCase("exit") && !javinator.haveGuess()){
+            javinator.sendAnswer(currentAnswer);
+            javinator.getStep();
+             speechText = javinator.getCurrentQuestion();
+
+        }
+
+
 
         // Create the Simple card content.
         SimpleCard card = new SimpleCard();
