@@ -56,10 +56,12 @@ public class Javinator implements IJavinator {
     public Javinator(double threshold) {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.threshold = threshold;
+        this.hackinatorSession = new HackinatorSession();
     }
 
     public Javinator() {
         this(DEFAULT_THRESHOLD);
+        this.hackinatorSession = new HackinatorSession();
     }
 
 
