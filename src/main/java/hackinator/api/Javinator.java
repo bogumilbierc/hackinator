@@ -12,20 +12,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Javinator implements IJavinator{
+public class Javinator implements IJavinator {
 
     //private Integer session, signature, step;
 
     private static final Logger log = LoggerFactory.getLogger(Javinator.class);
 
     private Response currentResponse;
-    private boolean started=false;
+    private boolean started = false;
     private double threshold;
 
-    private static final double DEFAULT_THRESHOLD=80.0;
+    private static final double DEFAULT_THRESHOLD = 80.0;
 
-    private String currentAnswer="";
-    private String currentQuestion="";
+    private String currentAnswer = "";
+    private String currentQuestion = "";
     private Integer step;
     private Integer session;
     private Integer signature;
@@ -50,42 +50,45 @@ public class Javinator implements IJavinator{
     private final String USER_AGENT = "Mozilla/5.0";
     private final String CORE_URL = "http://api-en1.akinator.com/ws/";
 
-    public Javinator(double threshold){
+    public Javinator(double threshold) {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         this.threshold = threshold;
     }
 
-    public Javinator(){
+    public Javinator() {
         this(DEFAULT_THRESHOLD);
     }
 
 
     private double getProgression() {
-        if(this.getCurrentResponse().getParameters().getStep_information()==null)
+        Response response = this.getCurrentResponse();
+        Parameters parameters = response.getParameters();
+        Step_Information step_information = parameters.getStep_information();
+        if (step_information == null)
             return this.getCurrentResponse().getParameters().getProgression();
         else
             return this.getCurrentResponse().getParameters().getStep_information().getProgression();
     }
 
-    public Boolean haveGuess(){
+    public Boolean haveGuess() {
         String[] g = null;
-        if(getProgression()>threshold){
+        if (getProgression() > threshold) {
             g = getAllGuesses();
         }
-        return g!=null && g.length>0 ;
+        return g != null && g.length > 0;
     }
 
-    public String[] getAllGuesses(){
-        String url = CORE_URL+"list?session=" + this.getSession() +
+    public String[] getAllGuesses() {
+        String url = CORE_URL + "list?session=" + this.getSession() +
                 "&signature=" + this.getSignature() +
                 "&step=" + (this.step) +
                 "&mode_question=0";
         Response response = sendRequest(url);
-        if(response.getParameters().getElements()!=null){
+        if (response.getParameters().getElements() != null) {
             String[] out = new String[response.getParameters().getElements().length];
-            int i=0;
-            for(Elements element: response.getParameters().getElements()){
-                out[i++]=element.getElement().getName();
+            int i = 0;
+            for (Elements element : response.getParameters().getElements()) {
+                out[i++] = element.getElement().getName();
             }
             return out;
         }
@@ -94,7 +97,7 @@ public class Javinator implements IJavinator{
 
 
     public Integer getStep() {
-        return this.step+1;
+        return this.step + 1;
     }
 
     private Response getCurrentResponse() {
@@ -103,20 +106,20 @@ public class Javinator implements IJavinator{
 
     public Integer startSession() {
 
-        String url = CORE_URL+"new_session?partner=1&player=Hackinator";
+        String url = CORE_URL + "new_session?partner=1&player=Hackinator";
         Response response = sendRequest(url);
         this.currentResponse = response;
         this.session = response.getParameters().getIdentification().getSession();
         this.signature = response.getParameters().getIdentification().getSignature();
-        this.started=true;
-        this.step=0;
-        this.currentQuestion=getQuestion();
+        this.started = true;
+        this.step = 0;
+        this.currentQuestion = getQuestion();
         return 0;
 
     }
 
     private String getQuestion() {
-        if(this.started) {
+        if (this.started) {
             return this.currentResponse.getParameters().getQuestion() != null ?
                     this.currentResponse.getParameters().getQuestion() :
                     this.currentResponse.getParameters().getStep_information().getQuestion();
@@ -126,27 +129,27 @@ public class Javinator implements IJavinator{
 
     public String sendAnswer(String answer) {
 
-        String url = CORE_URL+"answer?session=" + this.getSession() +
+        String url = CORE_URL + "answer?session=" + this.getSession() +
                 "&signature=" + this.getSignature() +
                 "&step=" + (this.step++) +
                 "&answer=" + getAnswerID(answer);
-        this.currentResponse=sendRequest(url);
+        this.currentResponse = sendRequest(url);
         setCurrentQuestion(getQuestion());
         return getCurrentQuestion();
 
     }
 
     public Integer endSession() {
-        this.session=null;
-        this.step=null;
+        this.session = null;
+        this.step = null;
         return null;
     }
 
-    private Response sendRequest(String url){
+    private Response sendRequest(String url) {
         try {
             Response response = mapper.readValue(new URL(url), Response.class);
 //            System.out.println("\t" + url + "\n" + response);
-            log.debug("Response: "+response);
+            log.debug("Response: " + response);
             return response;
         } catch (IOException e) {
             System.out.println("ERROR!!!" + e.getLocalizedMessage());
@@ -154,31 +157,36 @@ public class Javinator implements IJavinator{
         return null;
     }
 
-    public static int getAnswerID(String ans){
+    public static int getAnswerID(String ans) {
         int id = 0;
-        switch (ans.toLowerCase()){
-            case "yes":{}
-            case "y":{
+        switch (ans.toLowerCase()) {
+            case "yes": {
+            }
+            case "y": {
                 id = 0;
                 break;
             }
-            case "no":{}
-            case "n":{
+            case "no": {
+            }
+            case "n": {
                 id = 1;
                 break;
             }
-            case "dontknow":{}
-            case "d":{
+            case "dontknow": {
+            }
+            case "d": {
                 id = 2;
                 break;
             }
-            case "probably":{}
-            case "p":{
+            case "probably": {
+            }
+            case "p": {
                 id = 3;
                 break;
             }
-            case "probablynot":{}
-            case "pn":{
+            case "probablynot": {
+            }
+            case "pn": {
                 id = 4;
                 break;
             }
