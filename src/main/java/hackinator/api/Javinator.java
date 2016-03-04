@@ -133,12 +133,13 @@ public class Javinator implements IJavinator {
     }
 
     public String sendAnswer(String answer) {
-        this.hackinatorSession.setStep(getStep() + 1);
+
 
         String url = CORE_URL + "answer?session=" + this.getSession() +
                 "&signature=" + this.getSignature() +
-                "&step=" + (this.getStep()) +
+                "&step=" + (this.hackinatorSession.getStep()) +
                 "&answer=" + getAnswerID(answer);
+        this.hackinatorSession.setStep(this.hackinatorSession.getStep() + 1);
 
         this.currentResponse = sendRequest(url);
         setCurrentQuestion(getQuestion());

@@ -8,30 +8,34 @@ import java.util.Scanner;
  * Created by kazak on 3/2/2016.
  */
 public class MainGame {
-    public static String currentAnswer="";
+    public static String currentAnswer = "";
+
     public static void main(String[] args) throws Exception {
 
         Scanner scan = new Scanner(System.in);
         IJavinator ja = new Javinator();
+        HackinatorSession session = null;
         System.out.println("Would you like to play a game? (yes/no): ");
-        switch (Javinator.getAnswerID(scan.next())){
+        switch (Javinator.getAnswerID(scan.next())) {
             case 1:
                 System.exit(0);
             case 0:
                 ja.startSession();
+                session = ja.getHackinatorSession();
         }
 
-        while(!currentAnswer.equalsIgnoreCase("exit") && !ja.haveGuess()){
+        while (!currentAnswer.equalsIgnoreCase("exit") && !ja.haveGuess()) {
             System.out.printf("Question %s : %s \n\t", ja.getStep(), ja.getCurrentQuestion());
             currentAnswer = scan.next();
+            ja.setHackinatorSession(session);
             ja.sendAnswer(currentAnswer);
         }
-        
-        if(ja.haveGuess()){
+
+        if (ja.haveGuess()) {
             System.out.println("Here are some guesses: ");
             String[] guesses = ja.getAllGuesses();
             Arrays.sort(guesses);
-            for(String str : guesses){
+            for (String str : guesses) {
                 System.out.println(str);
             }
         } else {
