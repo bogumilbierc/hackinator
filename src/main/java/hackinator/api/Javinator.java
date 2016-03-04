@@ -2,33 +2,27 @@ package hackinator.api;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Javinator implements IJavinator{
 
     //private Integer session, signature, step;
+
+    private static final Logger log = LoggerFactory.getLogger(Javinator.class);
+
     private Response currentResponse;
     private boolean started=false;
     private double threshold;
 
     private static final double DEFAULT_THRESHOLD=80.0;
-
-    private enum _currentAnswer {
-        yes(0), no(1), dontknow(2), probably(3), probablynot(4);
-
-        _currentAnswer(int i) {
-            storrage.put(this, i);
-        }
-        Integer getAnswerId(_currentAnswer ans){
-            return storrage.get(ans);
-        }
-
-        Map<_currentAnswer, Integer> storrage = new HashMap<>();
-    }
 
     private String currentAnswer="";
     private String currentQuestion="";
@@ -109,7 +103,7 @@ public class Javinator implements IJavinator{
 
     public Integer startSession() {
 
-        String url = CORE_URL+"new_session?partner=1&player=Javinator";
+        String url = CORE_URL+"new_session?partner=1&player=Hackinator";
         Response response = sendRequest(url);
         this.currentResponse = response;
         this.session = response.getParameters().getIdentification().getSession();
@@ -152,6 +146,7 @@ public class Javinator implements IJavinator{
         try {
             Response response = mapper.readValue(new URL(url), Response.class);
 //            System.out.println("\t" + url + "\n" + response);
+            log.debug("Response: "+response);
             return response;
         } catch (IOException e) {
             System.out.println("ERROR!!!" + e.getLocalizedMessage());
