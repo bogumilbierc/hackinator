@@ -66,13 +66,18 @@ public class Javinator implements IJavinator {
 
 
     private double getProgression() {
-        Response response = this.getCurrentResponse();
-        Parameters parameters = response.getParameters();
-        Step_Information step_information = parameters.getStep_information();
-        if (step_information == null)
-            return this.getCurrentResponse().getParameters().getProgression();
-        else
-            return this.getCurrentResponse().getParameters().getStep_information().getProgression();
+        try {
+            Response response = this.getCurrentResponse();
+            Parameters parameters = response.getParameters();
+            Step_Information step_information = parameters.getStep_information();
+            if (step_information == null)
+                return this.getCurrentResponse().getParameters().getProgression();
+            else
+                return this.getCurrentResponse().getParameters().getStep_information().getProgression();
+        } catch (NullPointerException e) {
+            log.error("NPE - progression", e);
+            return 0;
+        }
     }
 
     public Boolean haveGuess() {
