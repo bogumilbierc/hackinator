@@ -2,10 +2,6 @@ package hackinator.api;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -149,7 +145,7 @@ public class Javinator implements IJavinator {
         try {
             Response response = mapper.readValue(new URL(url), Response.class);
 //            System.out.println("\t" + url + "\n" + response);
-            log.debug("Response: " + response);
+            log.info("Response: "+response);
             return response;
         } catch (IOException e) {
             System.out.println("ERROR!!!" + e.getLocalizedMessage());
