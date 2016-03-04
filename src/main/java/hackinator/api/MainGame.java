@@ -1,7 +1,5 @@
 package hackinator.api;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Scanner;
 
 /**
@@ -24,23 +22,27 @@ public class MainGame {
                 session = ja.getHackinatorSession();
         }
 
-        while (!currentAnswer.equalsIgnoreCase("exit") && !ja.haveGuess()) {
-            System.out.printf("Question %s : %s \n\t", ja.getStep(), ja.getCurrentQuestion());
-            currentAnswer = scan.next();
-            ja.setHackinatorSession(session);
-            ja.sendAnswer(currentAnswer);
+        boolean finished = false;
+        while (!currentAnswer.equalsIgnoreCase("exit") && !finished) {
+            if (ja.haveGuess()) {
+                System.out.println("Is Your character: " + ja.getAllGuesses()[0]);
+                currentAnswer = scan.next();
+                ja.setHackinatorSession(session);
+                ja.sendAnswer(currentAnswer);
+                if (currentAnswer.equals("yes")) {
+                    finished = true;
+                }
+            }
+            if (!finished) {
+                System.out.printf("Question %s : %s \n\t", ja.getStep(), ja.getCurrentQuestion());
+                currentAnswer = scan.next();
+                ja.setHackinatorSession(session);
+                ja.sendAnswer(currentAnswer);
+            }
+
+
         }
 
-        if (ja.haveGuess()) {
-            System.out.println("Here are some guesses: ");
-            String[] guesses = ja.getAllGuesses();
-            Arrays.sort(guesses);
-            for (String str : guesses) {
-                System.out.println(str);
-            }
-        } else {
-            System.out.println("Unfortunately, Nothing :( ");
-        }
         ja.endSession();
 
     }
