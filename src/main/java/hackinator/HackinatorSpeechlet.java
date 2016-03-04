@@ -119,7 +119,18 @@ public class HackinatorSpeechlet implements Speechlet {
     }
 
     private SpeechletResponse getNextQuestion(Intent intent) {
+        int retry = 10;
+        for (int i = 0; i < retry; i++) {
+             try {
+                return getNextQuestionUnsafe(intent);
+             } catch (Exception e) {
 
+             }
+        }
+        return getNextQuestionUnsafe(intent);
+    }
+
+    private SpeechletResponse getNextQuestionUnsafe(Intent intent) {
         String currentAnswer = intent.getSlot("Answer").getValue();
         String speechText = "";
         log.info("answer from user " + currentAnswer);
@@ -155,6 +166,5 @@ public class HackinatorSpeechlet implements Speechlet {
         reprompt.setOutputSpeech(speech);
 
         return SpeechletResponse.newAskResponse(speech, reprompt, card);
-
     }
 }
