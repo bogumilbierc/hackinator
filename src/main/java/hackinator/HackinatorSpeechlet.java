@@ -16,7 +16,6 @@ import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import hackinator.api.HackinatorSession;
 import hackinator.state.StaticGamer;
 import org.slf4j.Logger;
