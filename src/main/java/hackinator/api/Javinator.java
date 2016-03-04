@@ -129,6 +129,7 @@ public class Javinator implements IJavinator {
                 "&signature=" + this.getSignature() +
                 "&step=" + (this.step++) +
                 "&answer=" + getAnswerID(answer);
+
         this.currentResponse = sendRequest(url);
         setCurrentQuestion(getQuestion());
         return getCurrentQuestion();
@@ -143,6 +144,7 @@ public class Javinator implements IJavinator {
 
     private Response sendRequest(String url) {
         try {
+            log.info("Sent reqiest: " + url);
             Response response = mapper.readValue(new URL(url), Response.class);
 //            System.out.println("\t" + url + "\n" + response);
             log.info("Response: "+response);
