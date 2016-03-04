@@ -14,6 +14,9 @@ import com.amazon.speech.speechlet.*;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 import hackinator.api.HackinatorSession;
 import hackinator.state.StaticGamer;
 import org.slf4j.Logger;
@@ -28,11 +31,25 @@ public class HackinatorSpeechlet implements Speechlet {
     private static final String HACK_SESSION = "HACK_SESSION";
 
     private HackinatorSession getHackSession(Session session) {
-        return (HackinatorSession) session.getAttribute(HACK_SESSION);
+
+        try {
+            String hackinatorString = (String) session.getAttribute(HACK_SESSION);
+            log.info("Session string: " + hackinatorString);
+            return new ObjectMapper().readValue(hackinatorString, HackinatorSession.class);
+        } catch (Exception e) {
+            log.error("Cannot deserialize session ", e);
+            return new HackinatorSession();
+        }
+
     }
 
     private void setHackSession(Session session, HackinatorSession hackinatorSession) {
-        session.setAttribute(HACK_SESSION, hackinatorSession);
+        try {
+            String hackinatorString = new ObjectMapper().writeValueAsString(hackinatorSession);
+            session.setAttribute(HACK_SESSION, hackinatorSession);
+        } catch (JsonProcessingException e) {
+            log.error("cannot serialize hackintosh session");
+        }
     }
 
     @Override
