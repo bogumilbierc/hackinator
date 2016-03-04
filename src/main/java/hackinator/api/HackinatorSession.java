@@ -8,6 +8,12 @@ public class HackinatorSession {
     private Integer session;
     private Integer signature;
 
+    public HackinatorSession() {
+        this.step = 0;
+        this.session = 0;
+        this.signature = 0;
+    }
+
     public Integer getStep() {
         return step;
     }
