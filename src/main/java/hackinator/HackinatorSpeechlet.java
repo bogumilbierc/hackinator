@@ -195,7 +195,9 @@ public class HackinatorSpeechlet implements Speechlet {
                 if (StaticGamer.javinator.haveGuess()) {
                     if (StaticGamer.javinator.getAllGuesses().length > 0) {
                         speechText = "Your character is: " + StaticGamer.javinator.getAllGuesses()[0];
+                        finished = true;
                         StaticGamer.javinator.startSession();
+                        setHackSession(session, StaticGamer.javinator.getHackinatorSession());
                     }
                 }
             } catch (Exception e) {
